@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\CompanyRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Company;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/company')]
@@ -21,8 +25,8 @@ class CompanyController extends AbstractController
             'companies' => $companies,
         ]);
     }
-    
-    #[Route('/add1', name: 'company_add1')]
+
+    #[Route('/add', name: 'company_add1')]
     public function addFirst(EntityManagerInterface $entityManager): Response
     {
         $sturno = new Company();
@@ -30,7 +34,32 @@ class CompanyController extends AbstractController
         // $entityManager = $this-getDoctrine()->getManager();
         $entityManager->persist($sturno);
         $entityManager->flush();
-        return new Response("Entreprise 'STURNIO' créee avec succès !")
+        return new Response("Entreprise 'STURNIO' créee avec succès !");
+    }
+
+    #[Route('/update{id}', name: 'company_update')]
+    public function update( int $id , EntityManagerInterface  $entityManager, companyRepository $companyRepository): Response{
+        $company = $companyRepository->find($id);
+
+        $company->setName("TC Bois");
+        $entityManager->persist($company);
+        $entityManager->flush();
+
+        return new response("Entreprise renommée avec succès ! ");
+
+    }
+
+    #[Route('/delete/{id}', name: 'company_delete')]
+    public function deleteCompany(int $id,EntityManagerInterface $entityManager, CompanyRepository $companyRepository): Response
+    {
+        $company = $companyRepository->find($id);
+
+        //$entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($company);
+        $entityManager ->flush();
+
+        return new Response("Entreprise supprimer avec succès !")
         ;
     }
+    
 }
