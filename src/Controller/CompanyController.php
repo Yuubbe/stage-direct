@@ -9,14 +9,27 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Company;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Form\CompanyType;
 
 #[Route('/company')]
 class CompanyController extends AbstractController
 {
+
+    public function __construct( private CompanyRepository $companyRepository,
+        private EntityManagerInterface $entityManager,
+        private FormFactoryInterface $formFactory
+
+
+
+
+    ){}
+
+    
     #[Route('/', name: 'company_index')]
-    public function index(CompanyRepository $companyRepository, Request $request): Response
+    public function index( Request $request): Response
     {
-        $companies = $companyRepository->findAll();
+        $companies = $this->companyRepository->findAll();
         dump($request);
 
 
@@ -27,32 +40,43 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/add', name: 'company_add1')]
-    public function addFirst(EntityManagerInterface $entityManager): Response
+    public function addFirst(Request $request): Response
     {
-        $sturno = new Company();
-        $sturno->setName("STURNO");
-        // $entityManager = $this-getDoctrine()->getManager();
-        $entityManager->persist($sturno);
-        $entityManager->flush();
-        return new Response("Entreprise 'STURNIO' créee avec succès !");
+        $company = new Company();
+        
+        $form = $this->formFactory->create(CompanyType::class, $company);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($company);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('company_index');
+        }
+
+        return $this->render('company/create.html.twig', ['form' => $form->createView()]);
+
+       
     }
 
     #[Route('/update{id}', name: 'company_update')]
-    public function update( int $id , EntityManagerInterface  $entityManager, companyRepository $companyRepository): Response{
-        $company = $companyRepository->find($id);
+    public function update( int $id ): Response{
+        $company = $this->$companyRepository->find($id);
 
         $company->setName("TC Bois");
-        $entityManager->persist($company);
-        $entityManager->flush();
+        $this->$entityManager->persist($company);
+        $this->$entityManager->flush();
 
         return new response("Entreprise renommée avec succès ! ");
+
+        
 
     }
 
     #[Route('/delete/{id}', name: 'company_delete')]
-    public function deleteCompany(int $id,EntityManagerInterface $entityManager, CompanyRepository $companyRepository): Response
+    public function deleteCompany(int $id,EntityManagerInterface $entityManager): Response
     {
-        $company = $companyRepository->find($id);
+        $company = $this->$companyRepository->find($id);
 
         //$entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($company);
