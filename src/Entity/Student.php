@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\SchoolRepository;
+use App\Repository\StudentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SchoolRepository::class)]
-#[ORM\Table(name: 'tbl_school')]
-class School
+#[ORM\Entity(repositoryClass: StudentRepository::class)]
+#[ORM\Table(name: 'tbl_student')]
+class Student
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,9 +17,12 @@ class School
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = null;
+    private ?string $firstname = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 50)]
+    private ?string $lastname = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $address = null;
 
     #[ORM\Column(length: 10, nullable: true)]
@@ -29,14 +32,14 @@ class School
     private ?string $town = null;
 
     /**
-     * @var Collection<int, Student>
+     * @var Collection<int, School>
      */
-    #[ORM\ManyToMany(targetEntity: Student::class, mappedBy: 'school')]
-    private Collection $students;
+    #[ORM\ManyToMany(targetEntity: School::class, inversedBy: 'students')]
+    private Collection $school;
 
     public function __construct()
     {
-        $this->students = new ArrayCollection();
+        $this->school = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -44,14 +47,26 @@ class School
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->name;
+        return $this->firstname;
     }
 
-    public function setName(string $name): static
+    public function setFirstname(string $firstname): static
     {
-        $this->name = $name;
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -93,28 +108,25 @@ class School
     }
 
     /**
-     * @return Collection<int, Student>
+     * @return Collection<int, School>
      */
-    public function getStudents(): Collection
+    public function getSchool(): Collection
     {
-        return $this->students;
+        return $this->school;
     }
 
-    public function addStudent(Student $student): static
+    public function addSchool(School $school): static
     {
-        if (!$this->students->contains($student)) {
-            $this->students->add($student);
-            $student->addSchool($this);
+        if (!$this->school->contains($school)) {
+            $this->school->add($school);
         }
 
         return $this;
     }
 
-    public function removeStudent(Student $student): static
+    public function removeSchool(School $school): static
     {
-        if ($this->students->removeElement($student)) {
-            $student->removeSchool($this);
-        }
+        $this->school->removeElement($school);
 
         return $this;
     }
