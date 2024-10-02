@@ -7,3 +7,4 @@ controllers:
 toggle_theme:
     path: /toggle-theme
     controller: App\Controller\ThemeController::toggleTheme
+

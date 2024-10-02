@@ -21,7 +21,7 @@ class StudentType extends AbstractType
             ->add('town')
             ->add('school', EntityType::class, [
                 'class' => School::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
             ])
         ;
