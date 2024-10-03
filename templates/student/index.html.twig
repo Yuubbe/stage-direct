@@ -14,6 +14,7 @@
                 <th>Address</th>
                 <th>Zipcode</th>
                 <th>Town</th>
+                <th>School</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                 <td>{{ student.address }}</td>
                 <td>{{ student.zipcode }}</td>
                 <td>{{ student.town }}</td>
+                
                 <td>
                     {% for school in student.school %}
                         {{ school.name }}{% if not loop.last %}, {% endif %}
