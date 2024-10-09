@@ -21,5 +21,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Service\SupabaseService:
+        arguments:
+            $supabaseUrl: '%env(SUPABASE_URL)%'
+            $supabaseKey: '%env(SUPABASE_KEY)%'
+
+    App\Security\SupabaseUserProvider:
+        arguments:
+            $supabaseService: '@App\Service\SupabaseService'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

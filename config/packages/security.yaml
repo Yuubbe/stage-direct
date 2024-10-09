@@ -56,3 +56,10 @@ when@test:
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
 
+        supabase_users:
+            id: App\Security\SupabaseUserProvider
+
+    firewalls:
+        main:
+            provider: supabase_users
+
