@@ -35,7 +35,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     role_hierarchy:
         
-        ROLE_STUDENT:       ROLE_USER
+        ROLE_STUDENT:       [ROLE_USER]
         ROLE_TEACHER:       [ROLE_STUDENT,ROLE_USER]
         ROLE_ADMIN:         [ROLE_TEACHER,ROLE_STUDENT,ROLE_USER]
         ROLE_SUPER_ADMIN: [ROLE_ADMIN,ROLE_TEACHER,ROLE_STUDENT,ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
@@ -55,11 +55,4 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
-
-        supabase_users:
-            id: App\Security\SupabaseUserProvider
-
-    firewalls:
-        main:
-            provider: supabase_users
 

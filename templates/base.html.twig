@@ -231,6 +231,18 @@
 
 
       </ul>
+     {% if is_granted('ROLE_SUPERADMIN') %}
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           Administration
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/home/">Administration</a></li>
+            <li><a class="dropdown-item" href="/home/new">Créer un message d'accueil</a></li>
+          </ul>
+        </li>
+      {% endif %}
+      
     </div>
   </div>
 

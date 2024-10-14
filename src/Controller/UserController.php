@@ -10,60 +10,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\SupabaseService;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
-    private $supabaseService;
-
-    public function __construct($supabaseService) {
-
-		$this->supabaseService = $supabaseService;
-	}
-
-    public function findAll()
-    {
-        $client = $this->supabaseService->getClient();
-        $response = $client->from('users')->select('*')->execute();
-        return $response->data;
-    }
-
-    public function findById($id)
-    {
-        $client = $this->supabaseService->getClient();
-        $response = $client->from('users')->select('*')->eq('id', $id)->execute();
-        return $response->data[0] ?? null;
-    }
-
-    public function create(array $userData)
-    {
-        $client = $this->supabaseService->getClient();
-        $response = $client->from('users')->insert($userData)->execute();
-        return $response->data[0] ?? null;
-    }
-
-    public function update($id, array $userData)
-    {
-        $client = $this->supabaseService->getClient();
-        $response = $client->from('users')->update($userData)->eq('id', $id)->execute();
-        return $response->data[0] ?? null;
-    }
-
-    public function delete($id)
-    {
-        $client = $this->supabaseService->getClient();
-        $response = $client->from('users')->delete()->eq('id', $id)->execute();
-        return $response->data[0] ?? null;
-    }
-    
-    //$this->denyAccessUnlessGranted(['ROLE_SUPERADMIN']);
     
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        
-        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
+        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN','ROLE_ADMIN');
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
@@ -72,7 +27,6 @@ final class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -83,7 +37,7 @@ final class UserController extends AbstractController
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
+
         return $this->render('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
@@ -93,7 +47,7 @@ final class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -102,7 +56,7 @@ final class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        
+        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -111,7 +65,7 @@ final class UserController extends AbstractController
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
+
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
@@ -121,14 +75,12 @@ final class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        
+        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }
-        $this->denyAccessUnlessGranted('ROLE_SUPERADMIN');
+
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 }
-
-	
