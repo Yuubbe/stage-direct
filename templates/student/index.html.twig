@@ -9,17 +9,17 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Firstname</th>
-                <th>Lastname</th>
-                <th>Address</th>
-                <th>Zipcode</th>
-                <th>Town</th>
+                <th><a href="{{ path('app_student_index', {sort: 'firstname', direction: sort == 'firstname' and direction == 'asc' ? 'desc' : 'asc'}) }}">Prénom</a></th>
+                <th><a href="{{ path('app_student_index', {sort: 'lastname', direction: sort == 'lastname' and direction == 'asc' ? 'desc' : 'asc'}) }}">Nom</a></th>
+                <th><a href="{{ path('app_student_index', {sort: 'address', direction: sort == 'address' and direction == 'asc' ? 'desc' : 'asc'}) }}">Address</a></th>
+                <th><a href="{{ path('app_student_index', {sort: 'zipcode', direction: sort == 'zipcode' and direction == 'asc' ? 'desc' : 'asc'}) }}">Zipcode</a></th>
+                <th><a href="{{ path('app_student_index', {sort: 'zipcode', direction: sort == 'zipcode' and direction == 'asc' ? 'desc' : 'asc'}) }}">Zipcode</a></th>
                 <th>School</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for student in students %}
+        {% for student in student %}
             <tr>
                 <td>{{ student.id }}</td>
                 <td>{{ student.firstname }}</td>

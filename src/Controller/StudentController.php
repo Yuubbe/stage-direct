@@ -15,11 +15,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class StudentController extends AbstractController
 {
     #[Route(name: 'app_student_index', methods: ['GET'])]
-    public function index(StudentRepository $studentRepository): Response
+    public function index(StudentRepository $studentRepository, Request $request): Response
     {
+        $sort = $request->query->get('sort', 'firstname');
+        $direction = $request->query->get('direction', 'asc');
+
+        $student = $studentRepository->findAllSorted($sort, $direction);
+
         return $this->render('student/index.html.twig', [
-            'students' => $studentRepository->findAll(),
+            'student' => $student,
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
+        
     }
 
     #[Route('/new', name: 'app_student_new', methods: ['GET', 'POST'])]
