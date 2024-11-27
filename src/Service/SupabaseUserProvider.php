@@ -1,6 +1,6 @@
 <?php
 // src/Security/SupabaseUserProvider.php
-namespace App\Security;
+namespace App\Service;
 
 use App\Service\SupabaseService;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

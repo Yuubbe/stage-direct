@@ -26,7 +26,7 @@ services:
             $supabaseUrl: '%env(SUPABASE_URL)%'
             $supabaseKey: '%env(SUPABASE_KEY)%'
 
-    App\Security\SupabaseUserProvider:
+    App\Service\SupabaseUserProvider:
         arguments:
             $supabaseService: '@App\Service\SupabaseService'
     # add more service definitions when explicit configuration is needed

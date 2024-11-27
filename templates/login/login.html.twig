@@ -1,40 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/script.js') }}"></script>
+{% endblock %}
+
+{% block title %}Log In{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+<a href="https://front.codes/" class="logo" target="_blank"></a>
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+<div class="section">
+    <div class="container">
+        <div class="row full-height justify-content-center">
+            <div class="col-12 text-center align-self-center py-5">
+                <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                    <h4 class="mb-0 pb-3">Log In</h4>
+                    <div class="card-3d-wrap mx-auto">
+                        <div class="card-3d-wrapper">
+                            <div class="card-front">
+                                <div class="center-wrap">
+                                    <div class="section text-center">
+                                        <form method="post">
+                                            {% if error %}
+                                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                            {% endif %}
+
+                                            {% if app.user %}
+                                                <div class="mb-3">
+                                                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                                                    <br>
+                                                    <a href="{{ path('app_default') }}">aller à l'accueil</a>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="form-group">
+                                                <label for="username" class="form-label">Email address</label>
+                                                <input type="email" class="form-style" id="username" name="_username" value="{{ last_username }}" placeholder="Your Email" autocomplete="email" required autofocus>
+                                                <i class="input-icon uil uil-at"></i>
+                                            </div>
+                                            <div class="form-group mt-2">
+                                                <label for="password" class="form-label">Password</label>
+                                                <input type="password" class="form-style" id="password" name="_password" placeholder="Your Password" autocomplete="current-password" required>
+                                                <i class="input-icon uil uil-lock-alt"></i>
+                                            </div>
+                                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                            <button type="submit" class="btn mt-4">Submit</button>
+                                            <p class="mb-0 mt-4 text-center"><a href="#0" class="link">Forgot your password?</a></p>
+                                            <p class="mb-0 mt-4 text-center"><a href="/register" class="link">You don't have an account ? click here to create it </a></p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endif %}
-
-        <form method="post">
-  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-  
-  <div class="mb-3">
-    <label for="username" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="username" name="_username" value="{{ last_username }}" aria-describedby="emailHelp" autocomplete="email" required autofocus>
-    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-  </div>
-  
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" name="_password" autocomplete="current-password" required>
-  </div>
-  
-  <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="rememberMe">
-    <label class="form-check-label" for="rememberMe">Remember me</label>
-  </div>
-  
-  <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-  
-  <button type="submit" class="btn btn-primary">Sign in</button>
-</form>
+        </div>
+    </div>
+</div>
 {% endblock %}
