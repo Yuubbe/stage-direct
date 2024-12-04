@@ -50,13 +50,14 @@ class UserType extends AbstractType
             ])
             */
             ->add('roles', ChoiceType::class, [
-                'mapped' => false, // Ce champ n'est pas mappé à l'entité
                 'multiple' => true,
                 'expanded' => true,
                 'choices' => [
                     'User' => 'ROLE_USER',
+                    'Teacher' => 'ROLE_TEACHER',
                     'Admin' => 'ROLE_ADMIN',
                     'Moderator' => 'ROLE_MODERATOR',
+
                 ],
                 'data' => $options['data']->getRoles(), // Définit les rôles existants de l'utilisateur dans le formulaire
                 'constraints' => [
