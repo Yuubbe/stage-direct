@@ -1,62 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-{% endblock %}
-
 {% block title %}Register{% endblock %}
 
 {% block body %}
     {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        <div>{{ flash_error }}</div>
     {% endfor %}
 
-    <div class="section">
-        <div class="container">
-            <div class="row full-height justify-content-center">
-                <div class="col-12 text-center align-self-center py-5">
-                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
-                        <h4 class="mb-0 pb-3">Register</h4>
-                        <div class="card-3d-wrap mx-auto">
-                            <div class="card-3d-wrapper">
-                                <div class="card-front">
-                                    <div class="center-wrap">
-                                        <div class="section text-center">
-                                            {{ form_start(registrationForm) }}
-                                                
-                                                {{ form_errors(registrationForm) }}
-                                                
-                                                <div class="form-group">
-                                                    {{ form_row(registrationForm.Firstname) }}
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    {{ form_row(registrationForm.Lastname) }}
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    {{ form_row(registrationForm.email) }}
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    {{ form_row(registrationForm.plainPassword, {
-                                                        label: 'Password'
-                                                    }) }}
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    {{ form_row(registrationForm.agreeTerms) }}
-                                                </div>
-                                                
-                                                <button type="submit" class="btn mt-4">Register</button>
-                                                
-                                            {{ form_end(registrationForm) }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <h4>Register</h4>
+    
+    {{ form_start(registrationForm) }}
+        
+        {{ form_errors(registrationForm) }}
+        
+        <div>
+            {{ form_row(registrationForm.Firstname) }}
         </div>
-    </div>
+        <div>
+            {{ form_row(registrationForm.Lastname) }}
+        </div>
+        <div>
+            {{ form_row(registrationForm.email) }}
+        </div>
+        <div>
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Password'
+            }) }}
+        </div>
+        <div>
+            {{ form_row(registrationForm.agreeTerms) }}
+        </div>
+        
+        <button type="submit">Register</button>
+        
+    {{ form_end(registrationForm) }}
 {% endblock %}
