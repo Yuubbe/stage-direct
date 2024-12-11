@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\DataFixtures;
 
 use Doctrine\Persistence\ObjectManager;
@@ -20,7 +20,7 @@ class UserFixtures extends Fixture
     
     public function load(ObjectManager $manager): void
     {
-        /* création du premier utilisateur */
+        
         
 
         $student = new User();
@@ -60,8 +60,9 @@ class UserFixtures extends Fixture
         $manager->persist($superadmin);
 
 
-        
+      
 
         $manager->flush();
     }
 }
+  */

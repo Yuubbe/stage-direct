@@ -1,43 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Company index{% endblock %}
+{% block title %}Companies{% endblock %}
 
 {% block body %}
-    <h1>Company index</h1>
+    <h1>Companies List</h1>
+
+    <a href="{{ path('app_company_export') }}" class="btn btn-success">Export to Excel</a>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Address</th>
                 <th>Tel</th>
                 <th>Mail</th>
                 <th>Zipcode</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for company in companies %}
-            <tr>
-                <td>{{ company.id }}</td>
-                <td>{{ company.name }}</td>
-                <td>{{ company.address }}</td>
-                <td>{{ company.tel }}</td>
-                <td>{{ company.mail }}</td>
-                <td>{{ company.zipcode }}</td>
-                <td>
-                    <a href="{{ path('app_company_show', {'id': company.id}) }}">show</a>
-                    <a href="{{ path('app_company_edit', {'id': company.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
+            {% for company in companies %}
+                <tr>
+                    <td>{{ company.id }}</td>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.address }}</td>
+                    <td>{{ company.tel }}</td>
+                    <td>{{ company.mail }}</td>
+                    <td>{{ company.zipcode }}</td>
+                    <td>
+                        <a href="{{ path('app_company_show', {'id': company.id}) }}">Show</a> |
+                        <a href="{{ path('app_company_edit', {'id': company.id}) }}">Edit</a> |
+                        <form action="{{ path('app_company_delete', {'id': company.id}) }}" method="post" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_company_new') }}">Create new</a>
 {% endblock %}
