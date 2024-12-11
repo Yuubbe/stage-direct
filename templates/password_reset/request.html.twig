@@ -1,0 +1,13 @@
+{# templates/password_reset/request.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+    <h1>Réinitialisez votre mot de passe</h1>
+    {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        <button type="submit">Envoyer un email de réinitialisation</button>
+    {{ form_end(form) }}
+{% endblock %}
