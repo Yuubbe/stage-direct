@@ -38,6 +38,10 @@ class Student
     #[ORM\ManyToMany(targetEntity: School::class, inversedBy: 'students')]
     private Collection $school;
 
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Grade $grade = null;
+
     public function __construct()
     {
         $this->school = new ArrayCollection();
@@ -130,6 +134,18 @@ class Student
     public function removeSchool(School $school): static
     {
         $this->school->removeElement($school);
+
+        return $this;
+    }
+
+    public function getGrade(): ?Grade
+    {
+        return $this->grade;
+    }
+
+    public function setGrade(?Grade $grade): static
+    {
+        $this->grade = $grade;
 
         return $this;
     }

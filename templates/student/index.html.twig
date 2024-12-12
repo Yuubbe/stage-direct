@@ -15,7 +15,8 @@
                 <th>Zipcode</th>
                 <th>Town</th>
                 <th>School</th>
-                <th>actions</th>
+                <th>Class</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,15 @@
                         {{ school.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                  </td>
+                 
+                <td>
+                    {% if student.grade %}
+                        {{ student.grade.name }}
+                    {% else %}
+                        No grade assigned
+                    {% endif %}
+                </td>
+
                 <td>
                     <a href="{{ path('app_student_show', {'id': student.id}) }}">show</a>
                     <a href="{{ path('app_student_edit', {'id': student.id}) }}">edit</a>
@@ -40,7 +50,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="8">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

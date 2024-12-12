@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ClassEntity;
+use App\Entity\Grade;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +13,7 @@ class ClassEntityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ClassEntity::class);
+        parent::__construct($registry, Grade::class);
     }
 
     //    /**

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Grade;
 use App\Entity\School;
 use App\Entity\Student;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,6 +18,7 @@ class StudentType extends AbstractType
             ->add('firstname')
             ->add('lastname')
             ->add('address')
+
             ->add('zipcode')
             ->add('town')
             ->add('school', EntityType::class, [
@@ -24,6 +26,14 @@ class StudentType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
             ])
+            ->add('grade', EntityType::class, [
+                'class' => Grade::class,
+                'choice_label' => 'name', // Affiche les noms des grades
+                'multiple' => false,      // Choix unique
+                'expanded' => false,      // Liste déroulante (radio si true)
+                'placeholder' => 'Choisir une classe', // Option vide par défaut
+            ])
+
         ;
     }
 
