@@ -17,7 +17,6 @@ class StudentType extends AbstractType
             ->add('firstname')
             ->add('lastname')
             ->add('address')
-            ->add('class')
             ->add('zipcode')
             ->add('town')
             ->add('school', EntityType::class, [

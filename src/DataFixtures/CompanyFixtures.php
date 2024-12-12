@@ -13,11 +13,12 @@ class CompanyFixtures extends Fixture
 
         $company = new Company();
         $company->setName('Sturno');
+        $company->setAddress('5 rue de Condol');
+        $company->setTel('01 02 03 04 05');
+        $company->setMail('test@gmail.com');
+        $company->setZipcode('50000');
         $manager->persist($company);
 
-        $company2 = new Company();
-        $company2->setName('Amazon');
-        $manager->persist($company2);
         // $product = new Product();
         // $manager->persist($product);
 

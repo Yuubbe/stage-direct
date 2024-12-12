@@ -11,6 +11,7 @@ use App\Entity\User;
 class UserFixtures extends Fixture
 {
     
+     private $passwordHasher = null;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
@@ -31,7 +32,9 @@ class UserFixtures extends Fixture
             $student,
             'UwU'
         );
+        //$student->setAddress('5 rue du général Leclerc');
         $student->setPassword($hashedPassword);
+        
         $student->setRoles(['ROLE_STUDENT']);
         $manager->persist($student);
 
@@ -45,18 +48,20 @@ class UserFixtures extends Fixture
         );
         $teacher->setPassword($hashedPassword);
         $teacher->setRoles(['ROLE_TEACHER']);
+        //$teacher->setAddress('Impasse Symfony');
         $manager->persist($teacher);
 
         $superadmin = new User();
         $superadmin->setEmail('debroise@ndlpavranches.fr');
         $superadmin->setFirstname('Jean-Michel');
         $superadmin->setLastname('Debroise');
+        //$superadmin->setAddress('allée Gionos');
         $hashedPassword = $this->passwordHasher->hashPassword(
             $superadmin,
             'PDG'
         );
         $superadmin->setPassword($hashedPassword);
-        $superadmin->setRoles(['ROLE_SUPERADMIN']);
+        $superadmin->setRoles(['ROLE_ADMIN']);
         $manager->persist($superadmin);
 
 

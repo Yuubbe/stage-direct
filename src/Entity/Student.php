@@ -31,8 +31,6 @@ class Student
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $town = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $class = null;
 
     /**
      * @var Collection<int, School>
@@ -50,16 +48,6 @@ class Student
         return $this->id;
     }
 
-    public function getClass(): ?string
-    {
-        return $this->class;
-    }
-
-    public function setClass(string $class): static
-    {
-         $this->class = $class;
-         return $this;
-    }
 
 
     public function getFirstname(): ?string
