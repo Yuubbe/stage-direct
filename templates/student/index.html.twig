@@ -12,6 +12,7 @@
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Address</th>
+                <th>Class</th>
                 <th>Zipcode</th>
                 <th>Town</th>
                 <th>School</th>
@@ -25,6 +26,7 @@
                 <td>{{ student.firstname }}</td>
                 <td>{{ student.lastname }}</td>
                 <td>{{ student.address }}</td>
+                <td>{{ student.class }}</td>
                 <td>{{ student.zipcode }}</td>
                 <td>{{ student.town }}</td>
                 
@@ -32,7 +34,7 @@
                     {% for school in student.school %}
                         {{ school.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
-                 <td>
+                 </td>
                 <td>
                     <a href="{{ path('app_student_show', {'id': student.id}) }}">show</a>
                     <a href="{{ path('app_student_edit', {'id': student.id}) }}">edit</a>

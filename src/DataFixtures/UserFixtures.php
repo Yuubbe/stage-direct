@@ -1,5 +1,5 @@
 <?php
-/*
+
 namespace App\DataFixtures;
 
 use Doctrine\Persistence\ObjectManager;
@@ -65,4 +65,4 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 }
-  */
+  
