@@ -149,4 +149,9 @@ class Student
 
         return $this;
     }
+
+    public function getGradeName(): ?string
+    {
+        return $this->grade ? $this->grade->getName() : null;
+    }
 }

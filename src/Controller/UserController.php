@@ -19,6 +19,7 @@ final class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]  // Vérifie que l'utilisateur a le rôle ROLE_ADMIN
     public function index(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
