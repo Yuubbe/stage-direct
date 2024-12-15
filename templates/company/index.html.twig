@@ -31,9 +31,7 @@
                     <td>
                         <a href="{{ path('app_company_show', {'id': company.id}) }}">Show</a> |
                         <a href="{{ path('app_company_edit', {'id': company.id}) }}">Edit</a> |
-                        <form action="{{ path('app_company_delete', {'id': company.id}) }}" method="post" style="display:inline;">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
+                        {{ include('company/_delete_form.html.twig') }}
                     </td>
                 </tr>
             {% endfor %}

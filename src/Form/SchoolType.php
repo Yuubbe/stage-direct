@@ -16,6 +16,7 @@ class SchoolType extends AbstractType
             ->add('address')
             ->add('zipcode')
             ->add('town')
+            
         ;
     }
 
