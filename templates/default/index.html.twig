@@ -10,12 +10,19 @@
 </head>
 <body>
 <ul class="menu-bar">
-  <li>Watch Now</li>
-  <li>Movies</li>
-  <li>TV Shows</li>
-  <li>Sports</li>
+  <li><a href="/student">Student</a></li>
+  <li><a href="/school">School</a></li>
+  <li><a href="/internship">Internship</a></li>
+  <li><a href="/internship-report">Internship Report</a></li>
   <li><a href="/company">company</a></li>
-  <li><a href="/">Login</a></li>
+  <li>
+    {% if app.user %}
+        <a href="/profile">{{ app.user.firstName }}</a>  {# Utilisez firstName en camelCase #}
+    {% else %}
+        <a href="/login">Login</a>
+    {% endif %}
+  </li>
+
 </ul>
 
 </body>

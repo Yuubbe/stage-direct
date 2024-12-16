@@ -85,6 +85,7 @@ final class SchoolController extends AbstractController
     #[Route('/{id}', name: 'app_school_show', methods: ['GET'])]
     public function show(School $school): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
         return $this->render('school/show.html.twig', [
             'school' => $school,
         ]);
@@ -93,6 +94,7 @@ final class SchoolController extends AbstractController
     #[Route('/{id}/edit', name: 'app_school_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, School $school, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
         $form = $this->createForm(SchoolType::class, $school);
         $form->handleRequest($request);
 
@@ -111,6 +113,7 @@ final class SchoolController extends AbstractController
     #[Route('/{id}', name: 'app_school_delete', methods: ['POST'])]
     public function delete(Request $request, School $school, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
         if ($this->isCsrfTokenValid('delete' . $school->getId(), $request->request->get('_token'))) {
             $entityManager->remove($school);
             $entityManager->flush();

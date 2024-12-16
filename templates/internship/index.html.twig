@@ -1,41 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Internship index{% endblock %}
+{% block title %}Liste des stages{% endblock %}
 
 {% block body %}
-    <h1>Internship index</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Liste des stages</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for internship in internships %}
-            <tr>
-                <td>{{ internship.id }}</td>
-                <td>{{ internship.title }}</td>
-                <td>{{ internship.description }}</td>
-                <td>{{ internship.startDate ? internship.startDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ internship.endDate ? internship.endDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_internship_show', {'id': internship.id}) }}">show</a>
-                    <a href="{{ path('app_internship_edit', {'id': internship.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="mb-3">
+            <a href="{{ path('app_internship_new') }}" class="btn btn-success">Créer un nouveau stage</a>
+            <a href="{{ path('app_internship_export_pdf') }}" class="btn btn-primary" target="_blank">Exporter en PDF</a>
+        </div>
 
-    <a href="{{ path('app_internship_new') }}">Create new</a>
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internship in internships %}
+                    <tr>
+                        <td>{{ internship.id }}</td>
+                        <td>{{ internship.title }}</td>
+                        <td>{{ internship.description }}</td>
+                        <td>{{ internship.startDate ? internship.startDate|date('d/m/Y H:i') : 'Non défini' }}</td>
+                        <td>{{ internship.endDate ? internship.endDate|date('d/m/Y H:i') : 'Non défini' }}</td>
+                        <td>
+                            <a href="{{ path('app_internship_show', {'id': internship.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                            <a href="{{ path('app_internship_edit', {'id': internship.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucun stage trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

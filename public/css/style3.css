@@ -1,5 +1,6 @@
 /* Global styles */
 body {
+    /*background: url("/img/background.webp") */
     background: url("https://files.oaiusercontent.com/file-9tCusiKH69pveQHEoT96Ci?se=2024-12-11T07%3A32%3A48Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D4eda9a0b-edc8-4628-9a5b-c52fdf758c73.webp&sig=ua%2BMWdBKMpUN3Amud3dywxH9z1g2ysXhEo2xbZ362Vc%3D") 
         center / cover no-repeat;
     height: 100vh;
@@ -10,6 +11,7 @@ body {
     position: relative;
     overflow: hidden;
 }
+
 
 body::before {
     content: '';

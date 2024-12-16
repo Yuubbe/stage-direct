@@ -48,6 +48,7 @@ final class CompanyController extends AbstractController
     #[Route('/export', name: 'app_company_export', methods: ['GET'])]
     public function exportToExcel(CompanyRepository $companyRepository): StreamedResponse
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
         // Récupérer toutes les entreprises
         $companies = $companyRepository->findAll();
 
@@ -102,6 +103,7 @@ final class CompanyController extends AbstractController
     #[Route('/{id}/edit', name: 'app_company_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
         $form = $this->createForm(CompanyType::class, $company);
         $form->handleRequest($request);
 
@@ -120,6 +122,7 @@ final class CompanyController extends AbstractController
     #[Route('/{id}', name: 'app_company_delete', methods: ['POST'])]
     public function delete(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('delete'.$company->getId(), $request->request->get('_token'))) {
             $entityManager->remove($company);
             $entityManager->flush();
