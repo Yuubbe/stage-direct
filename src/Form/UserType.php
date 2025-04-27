@@ -18,15 +18,21 @@ class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['data'] ?? null;
+        $existingRoles = $user && method_exists($user, 'getRoles') ? $user->getRoles() : [];
+
+        // Si l'utilisateur n'a pas encore de rôle, on lui donne ROLE_STUDENT par défaut
+        if (empty($existingRoles)) {
+            $existingRoles = ['ROLE_STUDENT'];
+        }
+
         $builder
-            ->add('Firstname')
-            ->add('Lastname')
+            ->add('firstName')
+            ->add('lastname')
             ->add('email')
-            
-           /**
-            * 
-             ->add('plainPassword', RepeatedType::class, [
-                'mapped' => false, // Ce champ n'est pas mappé à l'entité
+            /*
+            ->add('plainPassword', RepeatedType::class, [
+                'mapped' => false,
                 'type' => PasswordType::class,
                 'first_options' => [
                     'label' => 'Password',
@@ -38,7 +44,6 @@ class UserType extends AbstractType
                         new Length([
                             'min' => 6,
                             'minMessage' => 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
                             'max' => 4096,
                         ]),
                     ],
@@ -53,13 +58,12 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'choices' => [
+                    'Student' => 'ROLE_STUDENT',
                     'User' => 'ROLE_USER',
                     'Teacher' => 'ROLE_TEACHER',
                     'Admin' => 'ROLE_ADMIN',
-                    'Moderator' => 'ROLE_MODERATOR',
-
                 ],
-                'data' => $options['data']->getRoles(), // Définit les rôles existants de l'utilisateur dans le formulaire
+                'data' => $existingRoles,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please select at least one role',

@@ -23,7 +23,7 @@ class StudentFixtures extends Fixture
         $student = new Student();
         $student->setFirstname('Fabrice');
         $student->setLastname('Pinard');
-        $student->setAddress('9 rue du crâne de mathis');
+        $student->setAddress('9 rue du général Leclerc');
         $student->setZipcode('10500');
         $student->setTown('Mont-Crâne');
         $student->setGrade($grade); // Passer l'objet Grade
