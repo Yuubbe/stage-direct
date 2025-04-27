@@ -10,9 +10,7 @@
             <a href="{{ path('app_internship_new') }}" class="btn btn-success shadow-sm animate__animated animate__pulse">
                 <i class="fas fa-plus-circle me-2"></i>Créer un nouveau stage
             </a>
-            <a href="{{ path('app_internship_export_pdf') }}" class="btn btn-primary shadow-sm animate__animated animate__pulse" target="_blank">
-                <i class="fas fa-file-pdf me-2"></i>Exporter en PDF
-            </a>
+
         </div>
 
         <div class="card shadow-sm border-0 overflow-hidden" data-aos="fade-up">
@@ -45,6 +43,7 @@
                                             <a href="{{ path('app_internship_edit', {'id': internship.id}) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Modifier">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            <a href="{{ path('app_internship_export_pdf', {id: internship.id}) }}" target="_blank">Exporter en PDF</a>
                                         </div>
                                     </td>
                                 </tr>

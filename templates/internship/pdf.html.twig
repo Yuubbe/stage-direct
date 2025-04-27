@@ -80,98 +80,102 @@
         <div>Convention de stage</div>
     </div>
 
-    <h1>{{ internship.title }}</h1>
+    {% for internship in internship %}
+        <h1>{{ internship.title }}</h1>
 
-    <div class="section">
-        <div class="section-title">Informations générales</div>
-        <table>
-            <tr>
-                <th style="width: 30%">Référence</th>
-                <td>STAGE-{{ internship.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ internship.title }}</td>
-            </tr>
-            <tr>
-                <th>Période</th>
-                <td>
-                    Du {{ internship.startDate ? internship.startDate|date('d/m/Y') : 'Non définie' }} 
-                    au {{ internship.endDate ? internship.endDate|date('d/m/Y') : 'Non définie' }}
-                </td>
-            </tr>
-            <tr>
-                <th>Durée</th>
-                <td>
-                    {% if internship.startDate and internship.endDate %}
-                        {% set diff = date(internship.endDate).diff(date(internship.startDate)) %}
-                        {% set days = diff.days %}
-                        {% if days == 0 %}
-                            1 jour
+        <div class="section">
+            <div class="section-title">Informations générales</div>
+            <table>
+                <tr>
+                    <th style="width: 30%">Référence</th>
+                    <td>STAGE-{{ internship.id }}</td>
+                </tr>
+                <tr>
+                    <th>Titre</th>
+                    <td>{{ internship.title }}</td>
+                </tr>
+                <tr>
+                    <th>Période</th>
+                    <td>
+                        Du {{ internship.startDate ? internship.startDate|date('d/m/Y') : 'Non définie' }} 
+                        au {{ internship.endDate ? internship.endDate|date('d/m/Y') : 'Non définie' }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Durée</th>
+                    <td>
+                        {% if internship.startDate and internship.endDate %}
+                            {% set diff = internship.endDate.diff(internship.startDate) %}
+                            {% set days = diff.days %}
+                            {% if days == 0 %}
+                                1 jour
+                            {% else %}
+                                {{ days + 1 }} jours ({{ ((days + 1) / 7)|round(0, 'floor') }} semaines)
+                            {% endif %}
                         {% else %}
-                            {{ days + 1 }} jours ({{ ((days + 1) / 7)|round(0, 'floor') }} semaines)
+                            Non définie
                         {% endif %}
-                    {% else %}
-                        Non définie
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <div class="section-title">Description du stage</div>
-        <div class="info-box">
-            {{ internship.description|nl2br }}
+                    </td>
+                </tr>
+            </table>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">Parties concernées</div>
-        
-        <div class="info-box">
-            <div class="info-title">Entreprise d'accueil</div>
-            {% if internship.company %}
-                <p><strong>Nom :</strong> {{ internship.company.name }}</p>
-                <p><strong>Adresse :</strong> {{ internship.company.address }}</p>
-                <p><strong>Téléphone :</strong> {{ internship.company.phone }}</p>
-                <p><strong>Email :</strong> {{ internship.company.email }}</p>
-                <p><strong>Secteur :</strong> {{ internship.company.sector }}</p>
-            {% else %}
-                <p>Aucune entreprise associée</p>
-            {% endif %}
+        <div class="section">
+            <div class="section-title">Description du stage</div>
+            <div class="info-box">
+                {{ internship.description|nl2br }}
+            </div>
         </div>
-        
-        <div class="info-box">
-            <div class="info-title">Stagiaire</div>
-            {% if internship.student %}
-                <p><strong>Nom :</strong> {{ internship.student.firstName }} {{ internship.student.lastName }}</p>
-                <p><strong>Email :</strong> {{ internship.student.email }}</p>
-                <p><strong>Téléphone :</strong> {{ internship.student.phone }}</p>
-                {% if internship.student.school %}
-                    <p><strong>École :</strong> {{ internship.student.school.name }}</p>
+
+        <div class="section">
+            <div class="section-title">Parties concernées</div>
+            
+            <div class="info-box">
+                <div class="info-title">Entreprise d'accueil</div>
+                {% if internship.company %}
+                    <p><strong>Nom :</strong> {{ internship.company.name }}</p>
+                    <p><strong>Adresse :</strong> {{ internship.company.address }}</p>
+                    <p><strong>Téléphone :</strong> {{ internship.company.phone }}</p>
+                    <p><strong>Email :</strong> {{ internship.company.email }}</p>
+                    <p><strong>Secteur :</strong> {{ internship.company.sector }}</p>
+                {% else %}
+                    <p>Aucune entreprise associée</p>
                 {% endif %}
-            {% else %}
-                <p>Aucun étudiant associé</p>
-            {% endif %}
+            </div>
+            
+            <div class="info-box">
+                <div class="info-title">Stagiaire</div>
+                {% if internship.student %}
+                    <p><strong>Nom :</strong> {{ internship.student.firstName }} {{ internship.student.lastName }}</p>
+                    <p><strong>Email :</strong> {{ internship.student.email }}</p>
+                    <p><strong>Téléphone :</strong> {{ internship.student.phone }}</p>
+                    {% if internship.student.school %}
+                        <p><strong>École :</strong> {{ internship.student.school.name }}</p>
+                    {% endif %}
+                {% else %}
+                    <p>Aucun étudiant associé</p>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">Signatures</div>
-        <table>
-            <tr>
-                <th>Pour l'entreprise</th>
-                <th>Pour l'établissement</th>
-                <th>Le stagiaire</th>
-            </tr>
-            <tr>
-                <td style="height: 100px;"></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
+        <div class="section">
+            <div class="section-title">Signatures</div>
+            <table>
+                <tr>
+                    <th>Pour l'entreprise</th>
+                    <th>Pour l'établissement</th>
+                    <th>Le stagiaire</th>
+                </tr>
+                <tr>
+                    <td style="height: 100px;"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="page-break-after: always;"></div>
+    {% endfor %}
 
     <div class="footer">
         Document généré le {{ "now"|date('d/m/Y') }} - Gestion des Stages

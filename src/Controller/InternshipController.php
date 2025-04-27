@@ -90,39 +90,30 @@ final class InternshipController extends AbstractController
 
         return $this->redirectToRoute('app_internship_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('/export/pdf', name: 'app_internship_export_pdf', methods: ['GET'])]
-public function exportPdf(InternshipRepository $internshipRepository): Response
-{
-    // Récupérer les données des stages
-    $internships = $internshipRepository->findAll();
 
-    // Initialiser DomPDF avec des options
-    $pdfOptions = new Options();
-    $pdfOptions->set('defaultFont', 'Arial');
-    $dompdf = new Dompdf($pdfOptions);
+    #[Route('/{id}/export/pdf', name: 'app_internship_export_pdf', methods: ['GET'])]
+    public function exportPdf(Internship $internship): Response
+    {
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($pdfOptions);
 
-    // Générer le HTML (vous pouvez personnaliser le fichier Twig)
-    $html = $this->renderView('internship/pdf.html.twig', [
-        'internships' => $internships,
-    ]);
+        $html = $this->renderView('internship/pdf.html.twig', [
+            'internship' => $internship,
+        ]);
 
-    // Charger le HTML dans DomPDF
-    $dompdf->loadHtml($html);
+        // Ajoute ceci pour vérifier le HTML généré
+        file_put_contents('test_pdf.html', $html);
 
-    // (Facultatif) Configurer la taille et l'orientation de la page
-    $dompdf->setPaper('A4', 'portrait');
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
 
-    // Générer le PDF
-    $dompdf->render();
+        $output = $dompdf->output();
+        $response = new Response($output);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="internship_'.$internship->getId().'.pdf"');
 
-    // Envoyer le PDF en réponse
-    $output = $dompdf->output();
-    $response = new Response($output);
-
-    // Configurer le téléchargement du fichier
-    $response->headers->set('Content-Type', 'application/pdf');
-    $response->headers->set('Content-Disposition', 'inline; filename="internships.pdf"');
-
-    return $response;
-}
+        return $response;
+    }
 }
