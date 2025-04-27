@@ -1,11 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    {{ form_start(form) }}
-        {{ form_row(form.contenu) }}
-        <button type="submit">Envoyer</button>
-    {{ form_end(form) }}
+{% block title %}Nouvelle entreprise{% endblock %}
 
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center page-header">
+        <h1>Créer une nouvelle entreprise</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Formulaire d'entreprise</h5>
+        </div>
+        <div class="card-body">
+            {{ include('company/_form.html.twig') }}
+        </div>
+        <div class="card-footer bg-white">
+            <a href="{{ path('app_company_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
     <script>
         tinymce.init({
             selector: '.tinymce', // Ciblez la classe définie dans le formulaire
@@ -15,3 +29,5 @@
         });
     </script>
 {% endblock %}
+
+

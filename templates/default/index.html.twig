@@ -1,29 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-  <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-</head>
-<body>
-<ul class="menu-bar">
-  <li><a href="/student">Student</a></li>
-  <li><a href="/school">School</a></li>
-  <li><a href="/internship">Internship</a></li>
-  <li><a href="/internship-report">Internship Report</a></li>
-  <li><a href="/company">company</a></li>
-  <li>
-    {% if app.user %}
-        <a href="/profile">{{ app.user.firstName }}</a>  {# Utilisez firstName en camelCase #}
-    {% else %}
-        <a href="/login">Login</a>
-    {% endif %}
-  </li>
+{% extends 'base.html.twig' %}
 
-</ul>
+{% block title %}Accueil - Gestion des Stages{% endblock %}
 
-</body>
-</html>
+{% block body %}
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-3">Gestion des Stages</h1>
+            <p class="lead mb-4">Plateforme complète pour gérer les stages, les étudiants, les entreprises et les écoles.</p>
+            <div class="d-grid gap-2 d-md-flex">
+                {% if app.user %}
+                    <a href="{{ path('app_internship_index') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                        <i class="fas fa-clipboard-list me-2"></i> Voir les stages
+                    </a>
+                    <a href="{{ path('app_internship_new') }}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i> Ajouter un stage
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                        <i class="fas fa-sign-in-alt me-2"></i> Connexion
+                    </a>
+                    <a href="{{ path('app_register') }}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i> Inscription
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block">
+            <img src="https://source.unsplash.com/random/600x400/?university" alt="Gestion des stages" class="img-fluid rounded shadow-lg">
+        </div>
+    </div>
+
+    <div class="row g-4 py-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-clipboard-list text-primary fa-2x"></i>
+                    </div>
+                    <h3 class="fs-4 fw-bold">Stages</h3>
+                    <p class="text-muted">Gérez tous les stages, leurs détails et leurs rapports.</p>
+                    <a href="{{ path('app_internship_index') }}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="fas fa-arrow-right me-1"></i> Accéder
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-building text-success fa-2x"></i>
+                    </div>
+                    <h3 class="fs-4 fw-bold">Entreprises</h3>
+                    <p class="text-muted">Consultez et gérez les entreprises partenaires.</p>
+                    <a href="{{ path('app_company_index') }}" class="btn btn-sm btn-outline-success mt-2">
+                        <i class="fas fa-arrow-right me-1"></i> Accéder
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-user-graduate text-info fa-2x"></i>
+                    </div>
+                    <h3 class="fs-4 fw-bold">Étudiants</h3>
+                    <p class="text-muted">Suivez les informations et parcours des étudiants.</p>
+                    <a href="{{ path('app_student_index') }}" class="btn btn-sm btn-outline-info mt-2">
+                        <i class="fas fa-arrow-right me-1"></i> Accéder
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-school text-warning fa-2x"></i>
+                    </div>
+                    <h3 class="fs-4 fw-bold">Écoles</h3>
+                    <p class="text-muted">Gérez les établissements partenaires du programme.</p>
+                    <a href="{{ path('app_school_index') }}" class="btn btn-sm btn-outline-warning mt-2">
+                        <i class="fas fa-arrow-right me-1"></i> Accéder
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center py-5">
+        <div class="col-lg-6 order-lg-2">
+            <h2 class="fw-bold mb-3">Simplifiez la gestion de vos stages</h2>
+            <p class="lead mb-4">Notre plateforme vous permet de centraliser toutes les informations relatives aux stages et de suivre leur évolution en temps réel.</p>
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i> Suivi complet des stages
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i> Gestion des rapports de stage
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i> Coordination entre écoles et entreprises
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i> Génération de documents PDF
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+            <img src="https://source.unsplash.com/random/600x400/?office" alt="Gestion simplifiée" class="img-fluid rounded shadow-lg">
+        </div>
+    </div>
+</div>
+{% endblock %}

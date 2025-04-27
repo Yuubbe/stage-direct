@@ -1,11 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Internship{% endblock %}
+{% block title %}Nouveau stage{% endblock %}
 
 {% block body %}
-    <h1>Create new Internship</h1>
+    <div class="d-flex justify-content-between align-items-center page-header">
+        <h1>Créer un nouveau stage</h1>
+    </div>
 
-    {{ include('internship/_form.html.twig') }}
-
-    <a href="{{ path('app_internship_index') }}">back to list</a>
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Formulaire de stage</h5>
+        </div>
+        <div class="card-body">
+            {{ include('internship/_form.html.twig') }}
+        </div>
+        <div class="card-footer bg-white">
+            <a href="{{ path('app_internship_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
 {% endblock %}

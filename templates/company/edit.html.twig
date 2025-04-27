@@ -1,13 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Company{% endblock %}
+{% block title %}Modifier l'entreprise{% endblock %}
 
 {% block body %}
-    <h1>Edit Company</h1>
+    <div class="d-flex justify-content-between align-items-center page-header">
+        <h1>Modifier l'entreprise</h1>
+    </div>
 
-    {{ include('company/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_company_index') }}">back to list</a>
-
-    {{ include('company/_delete_form.html.twig') }}
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Formulaire d'édition</h5>
+        </div>
+        <div class="card-body">
+            {{ include('company/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-between">
+            <a href="{{ path('app_company_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+            {{ include('company/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

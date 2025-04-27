@@ -1,42 +1,92 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Company{% endblock %}
+{% block title %}Détails de l'entreprise{% endblock %}
 
 {% block body %}
-    <h1>Company</h1>
+    <div class="d-flex justify-content-between align-items-center page-header">
+        <h1>Détails de l'entreprise</h1>
+        <a href="{{ path('app_company_edit', {'id': company.id}) }}" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i> Modifier
+        </a>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ company.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ company.name }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ company.address }}</td>
-            </tr>
-            <tr>
-                <th>Tel</th>
-                <td>{{ company.tel }}</td>
-            </tr>
-            <tr>
-                <th>Mail</th>
-                <td>{{ company.mail }}</td>
-            </tr>
-            <tr>
-                <th>Zipcode</th>
-                <td>{{ company.zipcode }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_company_index') }}">back to list</a>
-
-    <a href="{{ path('app_company_edit', {'id': company.id}) }}">edit</a>
-
-    {{ include('company/_delete_form.html.twig') }}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Informations générales</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%">ID</th>
+                                <td>{{ company.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ company.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Adresse</th>
+                                <td>{{ company.address }}</td>
+                            </tr>
+                            <tr>
+                                <th>Téléphone</th>
+                                <td>{{ company.tel }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ company.mail }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Stages associés</h5>
+                </div>
+                <div class="card-body">
+                    {% if company.internships is defined and company.internships|length > 0 %}
+                        <div class="list-group">
+                            {% for internship in company.internships %}
+                                <a href="{{ path('app_internship_show', {'id': internship.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ internship.title }}</h6>
+                                        <small class="text-muted">
+                                            {{ internship.startDate ? internship.startDate|date('d/m/Y') : '' }} - 
+                                            {{ internship.endDate ? internship.endDate|date('d/m/Y') : '' }}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-clipboard-list text-muted mb-2" style="font-size: 2rem;"></i>
+                            <p class="mb-0">Aucun stage associé à cette entreprise</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_company_index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        </a>
+                        {{ include('company/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
