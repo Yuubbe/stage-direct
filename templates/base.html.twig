@@ -7,13 +7,14 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <linl rel="icon" type="image/png" href="img/favicon.png"/>
-    <title>{{ 'welcome'|trans }}</title>
+    <link rel="icon" type="image/png" href="img/favicon.png"/>
+    <title>{% block title %}{{ 'welcome'|trans }}{% endblock %}</title>
 
     {% block stylesheets %}
         <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/starter-template/">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
         <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     {% endblock %}
 
     
@@ -25,32 +26,47 @@
     
   </head>
   <body>
-  
-    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('app_default') }}">Stage Direct</a>
+            <div class="navbar-text ms-auto">
+                {% if app.request.cookies.get('user_firstname') and app.request.cookies.get('user_lastname') %}
+                    <span class="me-2">
+                        <i class="fas fa-user me-1"></i>
+                        {{ app.request.cookies.get('user_firstname') }} {{ app.request.cookies.get('user_lastname') }}
+                    </span>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-sign-in-alt me-1"></i> Connexion
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
 
+    <main class="container mt-4">
+        {% block body %}{% endblock %}
+    </main>
 
-  <main>
-    {% block body %}
-    
+    <footer class="container pt-5 my-5 text-body-secondary border-top">
+        Created by the Bootstrap team &middot; &copy; 2024 and the NDLP SIO 2023/2025 team
+    </footer>
+
+    {% block javascripts %}
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('tinymce/js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+        <script>
+            tinymce.init({
+                selector: 'textarea.tinymce',
+                license_key: 'gpl',
+                plugins: 'lists link image preview',
+                toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                menubar: true
+            });
+        </script>
     {% endblock %}
-  </main>
-  <footer class="pt-5 my-5 text-body-secondary border-top">
-    Created by the Bootstrap team &middot; &copy; 2024 and thle NDLP SIO 2023/2025 team
-  </footer>
-</div>
-{% block javascripts %}
-    <script src="/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('tinymce/js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
-    <script>
-  tinymce.init({
-    selector: 'textarea.tinymce',
-    license_key: 'gpl',
-    plugins: 'lists link image preview',
-    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-    menubar: true
-  });
-</script>
-{% endblock %}
-
-    </body>
+  </body>
 </html>

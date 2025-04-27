@@ -64,7 +64,7 @@ class InternshipType extends AbstractType
             ])
             ->add('company', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'label' => 'Entreprise',
                 'attr' => [
                     'class' => 'form-select rounded-pill',

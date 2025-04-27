@@ -36,6 +36,14 @@ final class InternshipController extends AbstractController
             $entityManager->persist($internship);
             $entityManager->flush();
 
+            // Store creator info in session
+            $user = $this->getUser();
+            $request->getSession()->set('internship_' . $internship->getId() . '_creator', [
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'email' => $user->getEmail()
+            ]);
+
             return $this->redirectToRoute('app_internship_index', [], Response::HTTP_SEE_OTHER);
         }
 
