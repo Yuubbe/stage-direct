@@ -15,13 +15,50 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 #[Route('/user')]
 final class UserController extends AbstractController
 {
-    #[Route(name: 'app_user_index', methods: ['GET'])]
-    
-    public function index(UserRepository $userRepository): Response
+    #[Route('/{page<\d+>?1}', name: 'app_user_index', methods: ['GET'])]
+    public function index(UserRepository $userRepository, int $page = 1): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        // Configuration de la pagination
+        $itemsPerPage = 10;
+        $totalItems = $userRepository->count([]);
+        $totalPages = ceil($totalItems / $itemsPerPage);
+        
+        // Calculer les limites de la page
+        $start = ($page - 1) * $itemsPerPage;
+        $end = $start + $itemsPerPage - 1;
+        
+        // Récupérer les utilisateurs pour cette page
+        $users = $userRepository->createQueryBuilder('u')
+            ->setFirstResult($start)
+            ->setMaxResults($itemsPerPage)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        // Générer les pages à afficher (5 pages autour de la page courante)
+        $pagesToShow = [];
+        $minPage = max(1, $page - 2);
+        $maxPage = min($totalPages, $page + 2);
+        
+        for ($i = $minPage; $i <= $maxPage; $i++) {
+            $pagesToShow[] = $i;
+        }
+
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $users,
+            'pagination' => [
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $totalItems,
+                'hasPreviousPage' => $page > 1,
+                'previousPage' => $page > 1 ? $page - 1 : null,
+                'hasNextPage' => $page < $totalPages,
+                'nextPage' => $page < $totalPages ? $page + 1 : null,
+                'pages' => $pagesToShow
+            ]
         ]);
     }
 

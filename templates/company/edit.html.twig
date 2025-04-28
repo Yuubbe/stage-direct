@@ -3,22 +3,24 @@
 {% block title %}Modifier l'entreprise{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between align-items-center page-header">
-        <h1>Modifier l'entreprise</h1>
-    </div>
-
-    <div class="card">
-        <div class="card-header bg-white">
-            <h5 class="card-title mb-0">Formulaire d'édition</h5>
-        </div>
-        <div class="card-body">
-            {{ include('company/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
-        </div>
-        <div class="card-footer bg-white d-flex justify-content-between">
-            <a href="{{ path('app_company_index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-            </a>
-            {{ include('company/_delete_form.html.twig') }}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Modifier l'entreprise</h5>
+                        <a href="{{ path('app_company_index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {{ include('company/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                    </div>
+                    <div class="card-footer bg-white text-end">
+                        {{ include('company/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

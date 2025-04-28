@@ -26,34 +26,13 @@
     
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="{{ path('app_default') }}">Stage Direct</a>
-            <div class="navbar-text ms-auto">
-                {% if app.request.cookies.get('user_firstname') and app.request.cookies.get('user_lastname') %}
-                    <span class="me-2">
-                        <i class="fas fa-user me-1"></i>
-                        {{ app.request.cookies.get('user_firstname') }} {{ app.request.cookies.get('user_lastname') }}
-                    </span>
-                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-sm">
-                        <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
-                    </a>
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-sign-in-alt me-1"></i> Connexion
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+    
 
     <main class="container mt-4">
         {% block body %}{% endblock %}
     </main>
 
-    <footer class="container pt-5 my-5 text-body-secondary border-top">
-        Created by the Bootstrap team &middot; &copy; 2024 and the NDLP SIO 2023/2025 team
-    </footer>
+
 
     {% block javascripts %}
         <script src="/js/bootstrap.bundle.min.js"></script>

@@ -6,7 +6,7 @@ use App\Repository\InternshipRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(name: '`tbl_internship`')]
+#[ORM\Table(name: 'tbl_internship')]
 #[ORM\Entity(repositoryClass: InternshipRepository::class)]
 class Internship
 {
@@ -30,6 +30,9 @@ class Internship
     #[ORM\ManyToOne(inversedBy: 'internships')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
+
+    #[ORM\JoinColumn(nullable: true)]
+    private $createdBy= null;
 
     public function getId(): ?int
     {
@@ -93,6 +96,14 @@ class Internship
     {
         $this->company = $company;
 
+        return $this;
+    }
+    public function getCreatedBy() {
+        return $this->CreateBy;
+        
+    }
+    public function setCreateBy(){
+        $this->CreateBy = $createdBy;
         return $this;
     }
 }

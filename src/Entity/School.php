@@ -28,11 +28,7 @@ class School
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $town = null;
 
-    /**
-     * @var Collection<int, Student>
-     */
-    #[ORM\ManyToMany(targetEntity: Student::class, mappedBy: 'school')]
-    private Collection $students;
+
 
     public function __construct()
     {
@@ -92,30 +88,8 @@ class School
         return $this;
     }
 
-    /**
-     * @return Collection<int, Student>
-     */
-    public function getStudents(): Collection
-    {
-        return $this->students;
-    }
+    
 
-    public function addStudent(Student $student): static
-    {
-        if (!$this->students->contains($student)) {
-            $this->students->add($student);
-            $student->addSchool($this);
-        }
 
-        return $this;
-    }
-
-    public function removeStudent(Student $student): static
-    {
-        if ($this->students->removeElement($student)) {
-            $student->removeSchool($this);
-        }
-
-        return $this;
-    }
+    
 }
