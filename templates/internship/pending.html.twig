@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Internships en attente{% endblock %}
+
+{% block body %}
+    <h1>Internships en attente</h1>
+
+    {% if internships is empty %}
+        <p>Aucun internship en attente.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internship in internships %}
+                    <tr>
+                        <td>{{ internship.title }}</td>
+                        <td>{{ internship.description }}</td>
+                        <td>{{ internship.startDate ? internship.startDate|date('d/m/Y') : 'N/A' }}</td>
+                        <td>{{ internship.endDate ? internship.endDate|date('d/m/Y') : 'N/A' }}</td>
+                        <td>
+                            <a href="{{ path('app_internship_show', { id: internship.id }) }}">Voir</a>
+                            <a href="{{ path('app_internship_edit', { id: internship.id }) }}">Modifier</a>
+                            <form action="{{ path('app_internship_delete', { id: internship.id }) }}" method="post" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ internship.id) }}">
+                                <button type="submit">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

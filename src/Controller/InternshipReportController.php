@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\IntershipReportEntity;
+use App\Entity\InternshipReportEntity;
 use App\Form\IntershipReportEntityType;
 use App\Repository\IntershipReportEntityRepository;
 use App\Service\PdfGenerator;
@@ -35,7 +35,7 @@ final class InternshipReportController extends AbstractController
     #[Route('/new', name: 'app_internship_report_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        $entity = new IntershipReportEntity();
+        $entity = new InternshipReportEntity();
         $form = $this->createForm(IntershipReportEntityType::class, $entity);
         $form->handleRequest($request);
 
@@ -52,15 +52,15 @@ final class InternshipReportController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_internship_report_show', methods: ['GET'])]
-    public function show(IntershipReportEntity $entity): Response
+    public function show(InternshipReportEntity $report): Response
     {
         return $this->render('internship_report/show.html.twig', [
-            'entity' => $entity,
+            'report' => $report,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_internship_report_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, IntershipReportEntity $entity): Response
+    public function edit(Request $request, InternshipReportEntity $entity): Response
     {
         $form = $this->createForm(IntershipReportEntityType::class, $entity);
         $form->handleRequest($request);
@@ -77,7 +77,7 @@ final class InternshipReportController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_internship_report_delete', methods: ['POST'])]
-    public function delete(Request $request, IntershipReportEntity $entity): Response
+    public function delete(Request $request, InternshipReportEntity $entity): Response
     {
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->get('_token'))) {
             $this->entityManager->remove($entity);
@@ -88,7 +88,7 @@ final class InternshipReportController extends AbstractController
     }
 
     #[Route('/{id}/pdf', name: 'app_internship_report_pdf', methods: ['GET'])]
-    public function downloadPdf(IntershipReportEntity $entity): Response
+    public function downloadPdf(InternshipReportEntity $entity): Response
     {
         if (!$entity) {
             throw $this->createNotFoundException('Le rapport demandé n\'existe pas.');

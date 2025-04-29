@@ -66,4 +66,11 @@ class InternshipRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function save(Internship $internship): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($internship);
+        $entityManager->flush();
+    }
 }

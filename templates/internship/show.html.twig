@@ -112,7 +112,7 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex">
                                 <i class="fas fa-map-marker-alt me-2 text-muted"></i>
-                                <span>{{ internship.company.address }}</span>
+                                <span>{{ internship.company.street }}</span>
                             </li>
 
                         </ul>
@@ -139,27 +139,29 @@
                 </div>
                 <div class="card-body">
                     {% if internship.createdBy %}
-                        <div class="text-center mb-3">
-                            <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                <i class="fas fa-user text-primary" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                        <h5 class="card-title text-center">{{ internship.createdBy.firstName }} {{ internship.createdBy.lastName }}</h5>
-                        <hr>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex">
-                                <i class="fas fa-envelope me-2 text-muted"></i>
-                                <span>{{ internship.createdBy.email }}</span>
-                            </li>
-                        </ul>
+                        {{ internship.createdBy.id }}
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-user text-muted mb-2" style="font-size: 2rem;"></i>
-                            <p class="mb-3">Information créateur non disponible</p>
-                        </div>
+                        Inconnu
                     {% endif %}
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h5 class="card-title mb-0">Détails du stage</h5>
+        </div>
+        <div class="card-body">
+            <p>Titre : {{ internship.title }}</p>
+            <p>Description : {{ internship.description }}</p>
+            <p>Statut : {{ internship.isPending ? 'En attente' : 'Validé' }}</p>
+
+            {% if is_granted('ROLE_TEACHER') and internship.isPending %}
+                <form action="{{ path('app_internship_validate', { id: internship.id }) }}" method="post">
+                    <button type="submit" class="btn btn-success">Valider le stage</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 

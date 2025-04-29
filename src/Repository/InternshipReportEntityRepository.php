@@ -16,6 +16,31 @@ class InternshipReportEntityRepository extends ServiceEntityRepository
         parent::__construct($registry, InternshipReportEntity::class);
     }
 
+    /**
+     * @return InternshipReportEntity[] Returns an array of InternshipReportEntity objects
+     */
+    public function findByInternship($internshipId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.internship = :internshipId')
+            ->setParameter('internshipId', $internshipId)
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return InternshipReportEntity|null Returns a single report by its ID
+     */
+    public function findOneById($id): ?InternshipReportEntity
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return InternshipReportEntity[] Returns an array of InternshipReportEntity objects
     //     */

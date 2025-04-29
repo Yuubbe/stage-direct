@@ -31,8 +31,15 @@ class Internship
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
-    #[ORM\JoinColumn(nullable: true)]
-    private $createdBy= null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isPending = true; // Par défaut, un internship est en attente
+
+    #[ORM\OneToOne(targetEntity: InternshipReportEntity::class, mappedBy: 'internship', cascade: ['persist', 'remove'])]
+    private ?InternshipReportEntity $report = null;
 
     public function getId(): ?int
     {
@@ -87,6 +94,7 @@ class Internship
         return $this;
     }
 
+
     public function getCompany(): ?Company
     {
         return $this->company;
@@ -98,12 +106,40 @@ class Internship
 
         return $this;
     }
-    public function getCreatedBy() {
-        return $this->CreateBy;
-        
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
     }
-    public function setCreateBy(){
-        $this->CreateBy = $createdBy;
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->isPending;
+    }
+
+    public function setPending(bool $isPending): static
+    {
+        $this->isPending = $isPending;
+
+        return $this;
+    }
+
+    public function getReport(): ?InternshipReportEntity
+    {
+        return $this->report;
+    }
+
+    public function setReport(?InternshipReportEntity $report): static
+    {
+        $this->report = $report;
+
         return $this;
     }
 }

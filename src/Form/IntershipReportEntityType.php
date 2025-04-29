@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\IntershipReportEntity;
+use App\Entity\InternshipReportEntity; // Assurez-vous que c'est le bon nom
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +19,7 @@ class IntershipReportEntityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => IntershipReportEntity::class, // Map the form to the entity
+            'data_class' => InternshipReportEntity::class, // Map the form to the entity
         ]);
     }
 }
