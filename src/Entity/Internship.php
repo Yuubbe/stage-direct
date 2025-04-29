@@ -32,14 +32,17 @@ class Internship
     private ?Company $company = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $createdBy = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isPending = true; // Par défaut, un internship est en attente
 
-    #[ORM\OneToOne(targetEntity: InternshipReportEntity::class, mappedBy: 'internship', cascade: ['persist', 'remove'])]
-    private ?InternshipReportEntity $report = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reportContent = null; // Contenu du rapport
+
+    // #[ORM\OneToOne(targetEntity: InternshipReportEntity::class, mappedBy: 'internship', cascade: ['persist', 'remove'])]
+    // private ?InternshipReportEntity $report = null;
 
     public function getId(): ?int
     {
@@ -131,14 +134,25 @@ class Internship
         return $this;
     }
 
-    public function getReport(): ?InternshipReportEntity
+    // public function getReport(): ?InternshipReportEntity
+    // {
+    //     return $this->report;
+    // }
+
+    // public function setReport(?InternshipReportEntity $report): static
+    // {
+    //     $this->report = $report;
+    //     return $this;
+    // }
+
+    public function getReportContent(): ?string
     {
-        return $this->report;
+        return $this->reportContent;
     }
 
-    public function setReport(?InternshipReportEntity $report): static
+    public function setReportContent(?string $reportContent): static
     {
-        $this->report = $report;
+        $this->reportContent = $reportContent;
 
         return $this;
     }

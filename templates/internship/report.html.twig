@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rapport de Stage{% endblock %}
+
+{% block body %}
+    <h1>Créer un rapport pour {{ internship.title }}</h1>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="report_content">Contenu du rapport</label>
+            <textarea id="report_content" name="report_content" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre le rapport</button>
+    </form>
+{% endblock %}

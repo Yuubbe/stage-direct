@@ -13,9 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use App\Entity\InternshipReportEntity;
-use App\Form\ReportType;
-use App\Repository\InternshipReportEntityRepository;
 
 #[Route('/internship')]
 final class InternshipController extends AbstractController
@@ -39,18 +36,6 @@ final class InternshipController extends AbstractController
             $entityManager->persist($internship);
             $entityManager->flush();
 
-            // Store creator info in session
-            $user = $this->getUser();
-            $request->getSession()->set('internship_' . $internship->getId() . '_creator', [
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName(),
-                'email' => $user->getEmail()
-            ]);
-
-            // Définir l'état d'attente
-            $internship->setPending(true);
-            $entityManager->flush();
-
             return $this->redirectToRoute('app_internship_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -60,20 +45,29 @@ final class InternshipController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_internship_show', methods: ['GET'])]
-    public function show(Internship $internship, InternshipReportEntityRepository $reportRepository): Response
+    #[Route('/{id}', name: 'app_internship_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
     {
-        // Récupérer les rapports associés à l'internship
-        $reports = $reportRepository->findByInternship($internship->getId());
+        if ($request->isMethod('POST')) {
+            $reportContent = $request->request->get('report_content'); // Récupérer le contenu du rapport depuis le formulaire
+
+            // Mettre à jour le contenu du rapport directement dans Internship
+            $internship->setReportContent($reportContent); // Assurez-vous d'avoir un champ pour le contenu dans Internship
+            $internship->setCreatedBy($this->getUser()); // Associer l'utilisateur qui a créé le stage
+
+            $entityManager->persist($internship);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_internship_show', ['id' => $internship->getId()], Response::HTTP_SEE_OTHER);
+        }
 
         return $this->render('internship/show.html.twig', [
             'internship' => $internship,
-            'reports' => $reports, // Passer les rapports à la vue
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_internship_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Internship $internship, EntityManagerInterface $entityManager, InternshipReportEntityRepository $reportRepository): Response
+    public function edit(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(InternshipType::class, $internship);
         $form->handleRequest($request);
@@ -81,12 +75,8 @@ final class InternshipController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            // Récupérer les rapports associés à l'internship après la mise à jour
-            $reports = $reportRepository->findByInternship($internship->getId());
-
             return $this->render('internship/edit.html.twig', [
                 'internship' => $internship,
-                'reports' => $reports, // Passer les rapports à la vue
             ]);
         }
 
@@ -168,45 +158,5 @@ final class InternshipController extends AbstractController
         $entityManager->flush();
 
         // Rediriger ou retourner une réponse
-    }
-
-    #[Route('/{id}/report/new', name: 'app_report_new', methods: ['GET', 'POST'])]
-    public function newReport(Request $request, Internship $internship, InternshipReportEntityRepository $reportRepository): Response
-    {
-        $report = new InternshipReportEntity();
-        $form = $this->createForm(ReportType::class, $report);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $report->setInternship($internship); // Lier le rapport à l'internship
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($report);
-            $entityManager->flush();
-
-            // Récupérer les rapports associés à l'internship après la création
-            $reports = $reportRepository->findByInternship($internship->getId());
-
-            return $this->redirectToRoute('app_internship_show', [
-                'id' => $internship->getId(),
-                'reports' => $reports, // Passer les rapports à la vue
-            ]);
-        }
-
-        return $this->render('report/new.html.twig', [
-            'form' => $form->createView(),
-            'internship' => $internship,
-        ]);
-    }
-
-    #[Route('/internship/{id}/validate', name: 'app_internship_validate', methods: ['POST'])]
-    public function validate(Internship $internship, InternshipRepository $internshipRepository): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_TEACHER');
-
-        // Valider le stage
-        $internship->setPending(false); // Mettre à jour l'état à validé
-        $internshipRepository->save($internship); // Assurez-vous d'avoir une méthode save dans le repository
-
-        return $this->redirectToRoute('app_internship_show', ['id' => $internship->getId()]);
     }
 }
