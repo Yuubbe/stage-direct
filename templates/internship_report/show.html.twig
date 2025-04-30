@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InternshipReport{% endblock %}
+
+{% block body %}
+    <h1>InternshipReport</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ internship_report.id }}</td>
+            </tr>
+            <tr>
+                <th>SubmissionDate</th>
+                <td>{{ internship_report.submissionDate ? internship_report.submissionDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ internship_report.content }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ internship_report.title }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_internship_report_index') }}">back to list</a>
+
+    <a href="{{ path('app_internship_report_edit', {'id': internship_report.id}) }}">edit</a>
+
+    {{ include('internship_report/_delete_form.html.twig') }}
+{% endblock %}

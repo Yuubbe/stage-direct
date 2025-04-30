@@ -134,9 +134,7 @@ final class CompanyController extends AbstractController
     #[Route('/{id}/edit', name: 'app_company_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Company $company, EntityManagerInterface $entityManager, SectorRepository $sectorRepository): Response
     {
-        $form = $this->createForm(CompanyType::class, $company, [
-            'sector_repository' => $sectorRepository
-        ]);
+        $form = $this->createForm(CompanyType::class, $company);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

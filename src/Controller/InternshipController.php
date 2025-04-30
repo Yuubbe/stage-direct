@@ -45,44 +45,32 @@ final class InternshipController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_internship_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
+    #[Route('/internship/{id}', name: 'app_internship_show', methods: ['POST', 'GET'])]
+    public function show(Internship $internship): Response
     {
-        if ($request->isMethod('POST')) {
-            $reportContent = $request->request->get('report_content'); // Récupérer le contenu du rapport depuis le formulaire
-
-            // Mettre à jour le contenu du rapport directement dans Internship
-            $internship->setReportContent($reportContent); // Assurez-vous d'avoir un champ pour le contenu dans Internship
-            $internship->setCreatedBy($this->getUser()); // Associer l'utilisateur qui a créé le stage
-
-            $entityManager->persist($internship);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_internship_show', ['id' => $internship->getId()], Response::HTTP_SEE_OTHER);
-        }
-
         return $this->render('internship/show.html.twig', [
             'internship' => $internship,
+            'reports' => $internship->getReports(), // Passez les rapports au template
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_internship_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER'); // Vérifie que l'utilisateur a le rôle 'ROLE_TEACHER'
+
         $form = $this->createForm(InternshipType::class, $internship);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->render('internship/edit.html.twig', [
-                'internship' => $internship,
-            ]);
+            return $this->redirectToRoute('app_internship_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('internship/edit.html.twig', [
             'internship' => $internship,
-            'form' => $form,
+            'form' => $form->createView(), // Assurez-vous d'utiliser createView() pour passer le formulaire à Twig
         ]);
     }
 

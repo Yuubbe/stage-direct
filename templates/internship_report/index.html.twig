@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InternshipReport index{% endblock %}
+
+{% block body %}
+    <h1>InternshipReport index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>SubmissionDate</th>
+                <th>Content</th>
+                <th>Title</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for internship_report in internship_reports %}
+            <tr>
+                <td>{{ internship_report.id }}</td>
+                <td>{{ internship_report.submissionDate ? internship_report.submissionDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ internship_report.content }}</td>
+                <td>{{ internship_report.title }}</td>
+                <td>
+                    <a href="{{ path('app_internship_report_show', {'id': internship_report.id}) }}">show</a>
+                    <a href="{{ path('app_internship_report_edit', {'id': internship_report.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_internship_report_new') }}">Create new</a>
+{% endblock %}

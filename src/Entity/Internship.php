@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InternshipRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,8 +43,13 @@ class Internship
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reportContent = null; // Contenu du rapport
 
-    // #[ORM\OneToOne(targetEntity: InternshipReportEntity::class, mappedBy: 'internship', cascade: ['persist', 'remove'])]
-    // private ?InternshipReportEntity $report = null;
+    #[ORM\OneToMany(mappedBy: 'internship', targetEntity: InternshipReport::class, orphanRemoval: true)]
+    private Collection $reports;
+
+    public function __construct()
+    {
+        $this->reports = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -134,17 +141,6 @@ class Internship
         return $this;
     }
 
-    // public function getReport(): ?InternshipReportEntity
-    // {
-    //     return $this->report;
-    // }
-
-    // public function setReport(?InternshipReportEntity $report): static
-    // {
-    //     $this->report = $report;
-    //     return $this;
-    // }
-
     public function getReportContent(): ?string
     {
         return $this->reportContent;
@@ -153,6 +149,33 @@ class Internship
     public function setReportContent(?string $reportContent): static
     {
         $this->reportContent = $reportContent;
+
+        return $this;
+    }
+
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(InternshipReport $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports[] = $report;
+            $report->setInternship($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(InternshipReport $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // Set the owning side to null (unless already changed)
+            if ($report->getInternship() === $this) {
+                $report->setInternship(null);
+            }
+        }
 
         return $this;
     }

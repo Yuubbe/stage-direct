@@ -16,7 +16,7 @@ class CompanyType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Nom de l\'entreprise',
+                'label' => "Nom de l'entreprise",
                 'attr' => ['class' => 'form-control']
             ])
             ->add('street', TextType::class, [
@@ -73,6 +73,5 @@ class CompanyType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Company::class,
         ]);
-        // Supprimez toute référence à sector_repository si elle existe
     }
 }

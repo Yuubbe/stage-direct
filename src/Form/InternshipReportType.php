@@ -2,10 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\Internship;
 use App\Entity\InternshipReport;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,16 +15,17 @@ class InternshipReportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => 'Titre',
-                'attr' => ['class' => 'form-control']
+            ->add('submissionDate', null, [
+                'widget' => 'single_text',
             ])
             ->add('content', TextareaType::class, [
-                'label' => 'Contenu',
-                'attr' => [
-                    'class' => 'form-control',
-                    'id' => 'report_content'
-                ]
+                'label' => 'Contenu du rapport',
+                'attr' => ['class' => 'form-control tinymce'],
+            ])
+            ->add('title')
+            ->add('internship', EntityType::class, [
+                'class' => Internship::class,
+                'choice_label' => 'id',
             ])
         ;
     }
