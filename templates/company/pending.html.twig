@@ -1,0 +1,44 @@
+{# filepath: c:\Users\gambl\Desktop\stage-direct\templates\company\pending.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprises en attente{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Entreprises en attente de validation</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for company in companies %}
+                <tr>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.street }}, {{ company.zipcode }} {{ company.city }}</td>
+                    <td>{{ company.phone }}</td>
+                    <td>{{ company.email }}</td>
+                    <td>
+                        <form method="post" action="{{ path('app_company_approve', {'id': company.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ company.id) }}">
+                            <button class="btn btn-success btn-sm">Approuver</button>
+                        </form>
+                        
+                        <a href="{{ path('app_company_show', {'id': company.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucune entreprise en attente</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

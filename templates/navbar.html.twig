@@ -1,0 +1,9 @@
+{# filepath: c:\Users\gambl\Desktop\stage-direct\templates\navbar.html.twig #}
+{% if is_granted('ROLE_TEACHER') %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_company_pending') }}">
+            Entreprises en attente
+            <span class="badge bg-warning">{{ pending_companies_count }}</span>
+        </a>
+    </li>
+{% endif %}

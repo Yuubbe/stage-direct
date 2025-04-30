@@ -4,9 +4,8 @@ namespace App\Form;
 
 use App\Entity\Company;
 use App\Entity\Sector;
-use App\Repository\SectorRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,13 +14,6 @@ class CompanyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $sectorRepository = $options['sector_repository'];
-        $sectors = $sectorRepository->findAll();
-        $sectorChoices = [];
-        foreach ($sectors as $sector) {
-            $sectorChoices[$sector->getName()] = $sector->getId();
-        }
-
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de l\'entreprise',
@@ -66,14 +58,12 @@ class CompanyType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('sector', ChoiceType::class, [
-                'label' => 'Secteur',
-                'required' => false,
-                'choices' => $sectorChoices,
-                'attr' => ['class' => 'form-control'],
-                'choice_label' => function ($choice, $key, $value) use ($sectorRepository) {
-                    return $sectorRepository->find($value)->getName();
-                }
+            ->add('sector', EntityType::class, [
+                'class' => Sector::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Sélectionnez un secteur',
+                'required' => true,
+                'attr' => ['class' => 'form-control']
             ])
         ;
     }
@@ -83,11 +73,6 @@ class CompanyType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Company::class,
         ]);
-
-        $resolver->setRequired([
-            'sector_repository'
-        ]);
-
-        $resolver->setAllowedTypes('sector_repository', SectorRepository::class);
+        // Supprimez toute référence à sector_repository si elle existe
     }
 }

@@ -42,8 +42,8 @@ class Company
     #[ORM\Column(length: 7, nullable: true)]
     private ?string $companySize = null;
 
-    #[ORM\ManyToOne(targetEntity: Sector::class, inversedBy: 'companies')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Sector::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Sector $sector = null;
 
     // --- Getters and Setters ---
@@ -161,5 +161,28 @@ class Company
     {
         $this->sector = $sector;
         return $this;
+    }
+
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
+
+    #[ORM\Column(length: 255)]
+    private string $status = self::STATUS_PENDING;
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
     }
 }

@@ -22,7 +22,6 @@
                             <i class="fas fa-school text-primary" style="font-size: 3rem;"></i>
                         </div>
                         <h3 class="mt-3">{{ school.name }}</h3>
-                        <p class="text-muted">{{ school.type }}</p>
                     </div>
                     <table class="table table-striped">
                         <tbody>
@@ -39,16 +38,12 @@
                                 <td>{{ school.address }}</td>
                             </tr>
                             <tr>
-                                <th>Téléphone</th>
-                                <td>{{ school.phone }}</td>
+                                <th>zipcode</th>
+                                <td>{{ school.zipcode }}</td>
                             </tr>
                             <tr>
-                                <th>Email</th>
-                                <td>{{ school.email }}</td>
-                            </tr>
-                            <tr>
-                                <th>Type</th>
-                                <td>{{ school.type }}</td>
+                                <th>town</th>
+                                <td>{{ school.town }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -61,31 +56,7 @@
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">Étudiants</h5>
                 </div>
-                <div class="card-body">
-                    {% if school.students is defined and school.students|length > 0 %}
-                        <div class="list-group">
-                            {% for student in school.students %}
-                                <a href="{{ path('app_student_show', {'id': student.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">{{ student.firstName }} {{ student.lastName }}</h6>
-                                        <small class="text-muted">{{ student.email }}</small>
-                                    </div>
-                                    <span class="badge bg-primary rounded-pill">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </span>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-user-graduate text-muted mb-2" style="font-size: 2rem;"></i>
-                            <p class="mb-0">Aucun étudiant associé à cette école</p>
-                            <a href="{{ path('app_student_new') }}" class="btn btn-sm btn-primary mt-3">
-                                <i class="fas fa-plus me-1"></i> Ajouter un étudiant
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
+            
             </div>
             
             <div class="card">

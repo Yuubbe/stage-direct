@@ -21,7 +21,7 @@ final class CompanyController extends AbstractController
     #[Route(name: 'app_company_index', methods: ['GET'])]
     public function index(CompanyRepository $companyRepository): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_TEACHER');
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $companies = $companyRepository->findAll();
         
         return $this->render('company/index.html.twig', [
@@ -29,13 +29,38 @@ final class CompanyController extends AbstractController
         ]);
     }
 
+    #[Route('/pending', name: 'app_company_pending', methods: ['GET'])]
+    public function pending(CompanyRepository $companyRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
+        $pendingCompanies = $companyRepository->findBy(['status' => Company::STATUS_PENDING]);
+        
+        return $this->render('company/pending.html.twig', [
+            'companies' => $pendingCompanies,
+        ]);
+    }
+
+    #[Route('/{id}/approve', name: 'app_company_approve', methods: ['POST'])]
+    public function approve(Request $request, Company $company, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
+        
+        if ($this->isCsrfTokenValid('approve'.$company->getId(), $request->request->get('_token'))) {
+            $company->setStatus(Company::STATUS_APPROVED);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'L\'entreprise a été approuvée.');
+        }
+        
+        return $this->redirectToRoute('app_company_pending');
+    }
+
     #[Route('/new', name: 'app_company_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SectorRepository $sectorRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $company = new Company();
-        $form = $this->createForm(CompanyType::class, $company, [
-            'sector_repository' => $sectorRepository
-        ]);
+        $company->setStatus(Company::STATUS_PENDING);
+        $form = $this->createForm(CompanyType::class, $company);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -43,12 +68,10 @@ final class CompanyController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'L\'entreprise a été créée avec succès.');
-            
-            return $this->redirectToRoute('app_company_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_company_index');
         }
 
         return $this->render('company/new.html.twig', [
-            'company' => $company,
             'form' => $form,
         ]);
     }
