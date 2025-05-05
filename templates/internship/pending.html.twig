@@ -32,6 +32,10 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ internship.id) }}">
                                 <button type="submit">Supprimer</button>
                             </form>
+                            <form action="{{ path('app_internship_approve', { id: internship.id }) }}" method="post" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ internship.id) }}">
+                                <button type="submit" class="btn btn-success">Approuver</button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}

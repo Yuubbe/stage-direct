@@ -13,15 +13,36 @@ use Symfony\Component\Routing\Attribute\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/internship')]
 final class InternshipController extends AbstractController
 {
-    #[Route(name: 'app_internship_index', methods: ['GET'])]
-    public function index(InternshipRepository $internshipRepository): Response
+    #[Route('/', name: 'app_internship_index', methods: ['GET'])]
+    public function index(Request $request, InternshipRepository $internshipRepository, PaginatorInterface $paginator): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        // Récupérer le terme de recherche
+        $searchTerm = $request->query->get('search', '');
+
+        // Rechercher les stages correspondant au terme
+        $queryBuilder = $internshipRepository->createQueryBuilder('i');
+        if (!empty($searchTerm)) {
+            $queryBuilder->where('i.title LIKE :searchTerm OR i.description LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Pagination
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(), // Query
+            $request->query->getInt('page', 1), // Numéro de la page
+            5 // Nombre d'éléments par page
+        );
+
         return $this->render('internship/index.html.twig', [
-            'internships' => $internshipRepository->findAll(),
+            'pagination' => $pagination,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
@@ -123,6 +144,23 @@ final class InternshipController extends AbstractController
         return $this->render('internship/pending.html.twig', [
             'internships' => $internships,
         ]);
+    }
+
+    #[Route('/internship/{id}/approve', name: 'app_internship_approve', methods: ['POST'])]
+    public function approve(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_TEACHER');
+
+        if ($this->isCsrfTokenValid('approve' . $internship->getId(), $request->request->get('_token'))) {
+            $internship->setIsPending(false);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le stage a été approuvé avec succès.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_internship_pending');
     }
 
     public function createInternship(Request $request): Response

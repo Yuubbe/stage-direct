@@ -14,18 +14,36 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/company')]
 final class CompanyController extends AbstractController
 {
-    #[Route(name: 'app_company_index', methods: ['GET'])]
-    public function index(CompanyRepository $companyRepository): Response
+    #[Route('/', name: 'app_company_index', methods: ['GET'])]
+    public function index(Request $request, CompanyRepository $companyRepository, PaginatorInterface $paginator): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $companies = $companyRepository->findAll();
-        
+
+        // Récupérer le terme de recherche
+        $searchTerm = $request->query->get('search', '');
+
+        // Rechercher les entreprises correspondant au terme
+        $queryBuilder = $companyRepository->createQueryBuilder('c');
+        if (!empty($searchTerm)) {
+            $queryBuilder->where('c.name LIKE :searchTerm OR c.street LIKE :searchTerm OR c.city LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Pagination
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(), // Query
+            $request->query->getInt('page', 1), // Numéro de la page
+            5 // Nombre d'éléments par page
+        );
+
         return $this->render('company/index.html.twig', [
-            'companies' => $companies,
+            'pagination' => $pagination,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
