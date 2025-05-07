@@ -185,4 +185,19 @@ class Company
     {
         return $this->status === self::STATUS_PENDING;
     }
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isApproved = false;
+
+    public function isApproved(): bool
+    {
+        return $this->isApproved;
+    }
+
+    public function setIsApproved(bool $isApproved): self
+    {
+        $this->isApproved = $isApproved;
+
+        return $this;
+    }
 }

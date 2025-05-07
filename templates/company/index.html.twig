@@ -5,9 +5,25 @@
 {% block body %}
     <div class="d-flex justify-content-between align-items-center page-header">
         <h1>Liste des entreprises</h1>
-        <a href="{{ path('app_company_new') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i> Ajouter une entreprise
-        </a>
+        <div>
+            <a href="{{ path('app_company_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Ajouter une entreprise
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form action="{{ path('app_company_approve_all') }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('approve_all') }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-double me-1"></i> Tout approuver
+                    </button>
+                </form>
+            {% endif %}
+            <a href="{{ path('app_company_export_pdf') }}" class="btn btn-danger">
+                <i class="fas fa-file-pdf me-1"></i> Exporter en PDF
+            </a>
+            <a href="{{ path('app_company_export_excel') }}" class="btn btn-success">
+                <i class="fas fa-file-excel me-1"></i> Exporter en Excel
+            </a>
+        </div>
     </div>
 
     <form method="get" action="{{ path('app_company_index') }}" class="mb-4">
@@ -53,6 +69,14 @@
                                         <a href="{{ path('app_company_edit', {'id': company.id}) }}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Modifier">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        {% if not company.isApproved %}
+                                            <form action="{{ path('app_company_approve', { id: company.id }) }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ company.id) }}">
+                                                <button type="submit" class="btn btn-success btn-sm">Approuver</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="badge bg-success">Approuvée</span>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>

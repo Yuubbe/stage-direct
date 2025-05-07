@@ -10,6 +10,19 @@
             <a href="{{ path('app_internship_new') }}" class="btn btn-success shadow-sm animate__animated animate__pulse">
                 <i class="fas fa-plus-circle me-2"></i>Créer un nouveau stage
             </a>
+
+            {% if is_granted('ROLE_TEACHER') %}
+                <a href="{{ path('app_internship_pending') }}" class="btn btn-warning shadow-sm">
+                    <i class="fas fa-clock me-2"></i>Voir les stages en attente
+                </a>
+            {% endif %}
+
+            <a href="{{ path('app_internship_export_pdf') }}" class="btn btn-danger">
+                <i class="fas fa-file-pdf me-1"></i> Exporter en PDF
+            </a>
+            <a href="{{ path('app_internship_export_excel') }}" class="btn btn-success">
+                <i class="fas fa-file-excel me-1"></i> Exporter en Excel
+            </a>
         </div>
 
         <form method="get" action="{{ path('app_internship_index') }}" class="mb-4">

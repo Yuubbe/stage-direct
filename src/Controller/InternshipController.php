@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -107,30 +109,70 @@ final class InternshipController extends AbstractController
         return $this->redirectToRoute('app_internship_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/export/pdf', name: 'app_internship_export_pdf', methods: ['GET'])]
-    public function exportPdf(Internship $internship): Response
+    #[Route('/internship/export/pdf', name: 'app_internship_export_pdf', methods: ['GET'])]
+    public function exportPdf(InternshipRepository $internshipRepository): Response
     {
+        $internships = $internshipRepository->findAll();
+
+        // Configure Dompdf
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($pdfOptions);
 
-        $html = $this->renderView('internship/pdf.html.twig', [
-            'internship' => $internship,
+        // Générer le contenu HTML pour le PDF
+        $html = $this->renderView('internship/export_pdf.html.twig', [
+            'internships' => $internships,
         ]);
 
-        // Ajoute ceci pour vérifier le HTML généré
-        file_put_contents('test_pdf.html', $html);
-
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
-        $output = $dompdf->output();
-        $response = new Response($output);
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'inline; filename="internship_'.$internship->getId().'.pdf"');
+        // Retourner le PDF en réponse
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="stages.pdf"',
+        ]);
+    }
 
-        return $response;
+    #[Route('/internship/export/excel', name: 'app_internship_export_excel', methods: ['GET'])]
+    public function exportExcel(InternshipRepository $internshipRepository): Response
+    {
+        $internships = $internshipRepository->findAll();
+
+        // Créer un nouveau fichier Excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Stages');
+
+        // Ajouter les en-têtes
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Titre');
+        $sheet->setCellValue('C1', 'Description');
+        $sheet->setCellValue('D1', 'Date de début');
+        $sheet->setCellValue('E1', 'Date de fin');
+
+        // Ajouter les données
+        $row = 2;
+        foreach ($internships as $internship) {
+            $sheet->setCellValue('A' . $row, $internship->getId());
+            $sheet->setCellValue('B' . $row, $internship->getTitle());
+            $sheet->setCellValue('C' . $row, $internship->getDescription());
+            $sheet->setCellValue('D' . $row, $internship->getStartDate() ? $internship->getStartDate()->format('d/m/Y') : 'Non défini');
+            $sheet->setCellValue('E' . $row, $internship->getEndDate() ? $internship->getEndDate()->format('d/m/Y') : 'Non défini');
+            $row++;
+        }
+
+        // Écrire le fichier Excel
+        $writer = new Xlsx($spreadsheet);
+        $tempFile = tempnam(sys_get_temp_dir(), 'internships') . '.xlsx';
+        $writer->save($tempFile);
+
+        // Retourner le fichier Excel en réponse
+        return new Response(file_get_contents($tempFile), 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="stages.xlsx"',
+        ]);
     }
 
     #[Route('/pending', name: 'app_internship_pending', methods: ['GET'])]
@@ -138,7 +180,6 @@ final class InternshipController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_TEACHER');
 
-        // Récupérer uniquement les internships en attente
         $internships = $internshipRepository->findBy(['isPending' => true]);
 
         return $this->render('internship/pending.html.twig', [
@@ -149,17 +190,22 @@ final class InternshipController extends AbstractController
     #[Route('/internship/{id}/approve', name: 'app_internship_approve', methods: ['POST'])]
     public function approve(Request $request, Internship $internship, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_TEACHER');
+        $this->denyAccessUnlessGranted('ROLE_TEACHER'); // Vérifie que l'utilisateur a le rôle 'ROLE_TEACHER'
 
+        // Vérifie la validité du jeton CSRF
         if ($this->isCsrfTokenValid('approve' . $internship->getId(), $request->request->get('_token'))) {
-            $internship->setIsPending(false);
+            // Met à jour la propriété isPending
+            $internship->setPending(false);
             $entityManager->flush();
 
+            // Ajoute un message flash de succès
             $this->addFlash('success', 'Le stage a été approuvé avec succès.');
         } else {
+            // Ajoute un message flash d'erreur si le jeton CSRF est invalide
             $this->addFlash('error', 'Jeton CSRF invalide.');
         }
 
+        // Redirige vers la liste des stages en attente
         return $this->redirectToRoute('app_internship_pending');
     }
 

@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Knp\Component\Pager\PaginatorInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 #[Route('/company')]
 final class CompanyController extends AbstractController
@@ -61,16 +63,21 @@ final class CompanyController extends AbstractController
     #[Route('/{id}/approve', name: 'app_company_approve', methods: ['POST'])]
     public function approve(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_TEACHER');
-        
-        if ($this->isCsrfTokenValid('approve'.$company->getId(), $request->request->get('_token'))) {
-            $company->setStatus(Company::STATUS_APPROVED);
+        $this->denyAccessUnlessGranted('ROLE_ADMIN'); // Vérifie que l'utilisateur a le rôle 'ROLE_ADMIN'
+
+        // Vérifie la validité du jeton CSRF
+        if ($this->isCsrfTokenValid('approve' . $company->getId(), $request->request->get('_token'))) {
+            $company->setIsApproved(true); // Marque l'entreprise comme approuvée
             $entityManager->flush();
-            
-            $this->addFlash('success', 'L\'entreprise a été approuvée.');
+
+            $this->addFlash('success', 'L\'entreprise a été approuvée avec succès.');
+        } else {
+            // Ajoute un message flash d'erreur si le jeton CSRF est invalide
+            $this->addFlash('error', 'Jeton CSRF invalide.');
         }
-        
-        return $this->redirectToRoute('app_company_pending');
+
+        // Redirige vers la liste des entreprises
+        return $this->redirectToRoute('app_company_index');
     }
 
     #[Route('/new', name: 'app_company_new', methods: ['GET', 'POST'])]
@@ -181,5 +188,100 @@ final class CompanyController extends AbstractController
         }
 
         return $this->redirectToRoute('app_company_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/company/approve-all', name: 'app_company_approve_all', methods: ['POST'])]
+    public function approveAll(EntityManagerInterface $entityManager, CompanyRepository $companyRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN'); // Vérifie que l'utilisateur a le rôle 'ROLE_ADMIN'
+
+        $request = Request::createFromGlobals();
+        if (!$this->isCsrfTokenValid('approve_all', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('app_company_index');
+        }
+
+        // Récupère toutes les entreprises non approuvées
+        $companies = $companyRepository->findBy(['isApproved' => false]);
+
+        foreach ($companies as $company) {
+            $company->setIsApproved(true); // Marque chaque entreprise comme approuvée
+        }
+
+        $entityManager->flush();
+
+        // Ajoute un message flash de succès
+        $this->addFlash('success', 'Toutes les entreprises ont été approuvées avec succès.');
+
+        // Redirige vers la liste des entreprises
+        return $this->redirectToRoute('app_company_index');
+    }
+
+    #[Route('/export/pdf', name: 'app_company_export_pdf', methods: ['GET'])]
+    public function exportPdf(CompanyRepository $companyRepository): Response
+    {
+        $companies = $companyRepository->findAll();
+
+        // Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Générer le contenu HTML pour le PDF
+        $html = $this->renderView('company/export_pdf.html.twig', [
+            'companies' => $companies,
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        // Retourner le PDF en réponse
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="entreprises.pdf"',
+        ]);
+    }
+
+    #[Route('/export/excel', name: 'app_company_export_excel', methods: ['GET'])]
+    public function exportExcel(CompanyRepository $companyRepository): Response
+    {
+        $companies = $companyRepository->findAll();
+
+        // Créer un nouveau fichier Excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Entreprises');
+
+        // Ajouter les en-têtes
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Nom');
+        $sheet->setCellValue('C1', 'Adresse');
+        $sheet->setCellValue('D1', 'Téléphone');
+        $sheet->setCellValue('E1', 'Email');
+        $sheet->setCellValue('F1', 'Secteur');
+
+        // Ajouter les données
+        $row = 2;
+        foreach ($companies as $company) {
+            $sheet->setCellValue('A' . $row, $company->getId());
+            $sheet->setCellValue('B' . $row, $company->getName());
+            $sheet->setCellValue('C' . $row, $company->getStreet() . ', ' . $company->getZipcode() . ' ' . $company->getCity());
+            $sheet->setCellValue('D' . $row, $company->getPhone());
+            $sheet->setCellValue('E' . $row, $company->getEmail());
+            $sheet->setCellValue('F' . $row, $company->getSector()->getName());
+            $row++;
+        }
+
+        // Écrire le fichier Excel
+        $writer = new Xlsx($spreadsheet);
+        $tempFile = tempnam(sys_get_temp_dir(), 'companies') . '.xlsx';
+        $writer->save($tempFile);
+
+        // Retourner le fichier Excel en réponse
+        return new Response(file_get_contents($tempFile), 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="entreprises.xlsx"',
+        ]);
     }
 }
